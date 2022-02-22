@@ -30,11 +30,14 @@ float Process::CpuUtilization() {
 // TODO: Return the command that generated this process
 string Process::Command() { return LinuxParser::Command(Pid()); }
 
-// TODO: Return this process's memory utilization
-string Process::Ram() { return LinuxParser::Ram(Pid()); }
+// Return this process's memory utilization
+string Process::Ram() { 
+    return to_string(std::stoi(LinuxParser::Ram(pid_))/1024); 
+//    return LinuxParser::Ram(Pid()); 
+}
 
 // TODO: Return the user (name) that generated this process
-string Process::User() { return LinuxParser::User(Pid()); }
+string Process::User() { return LinuxParser::User(pid_); }
 
 // TODO: Return the age of this process (in seconds)
 long int Process::UpTime() { return LinuxParser::UpTime(Pid()); }
