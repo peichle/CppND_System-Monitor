@@ -7,6 +7,8 @@ class Processor {
 
   // TODO: Declare any necessary private members
  private:
+    long prev_active_ticks;
+    long prev_idle_ticks;
 };
 
 #endif
