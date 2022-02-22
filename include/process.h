@@ -20,8 +20,10 @@ class Process {
   // Declare any necessary private members
  private:
   long prev_active_ticks{0};
-  long prev_idle_ticks{0};
+  long prev_ticks{0};
   int pid_;
   float cpuUtilization_;
+  std::string user_;
+  std::string com_;
 };
 #endif

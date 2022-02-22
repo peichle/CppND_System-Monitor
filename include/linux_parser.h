@@ -46,8 +46,6 @@ long ActiveJiffies();
 long ActiveJiffies(int pid);
 long IdleJiffies();
 
-// overloaded CPU Utilization
-std::vector<std::string> CpuUtilization(long a, long b);
 // Processes
 std::string Command(int pid);
 std::string Ram(int pid);

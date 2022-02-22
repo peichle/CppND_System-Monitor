@@ -14,21 +14,34 @@ using std::vector;
 
 Process::Process(int pid) : pid_(pid) {
     cpuUtilization_ = CpuUtilization();
+    pid_ = pid;
+    com_ = LinuxParser::Command(pid_);
+    user_ = LinuxParser::User(pid_);
+    //cpuUtilization_ = 0.69;
+    //beforeProcJiffies_ = 0;
+    //beforeTotalJiffies_ = 0;    
 }
 
 // Return this process's ID
 int Process::Pid() { return pid_; }
 
-// TODO: Return this process's CPU utilization
+// Return this process's CPU utilization
 float Process::CpuUtilization() {
-    long totalTime = LinuxParser::ActiveJiffies(pid_);
-    long uptime = LinuxParser::UpTime(pid_);
-    cpuUtilization_ = (static_cast<float> (totalTime)/sysconf(_SC_CLK_TCK))/uptime;
+    long activeJiffies = LinuxParser::ActiveJiffies(pid_);
+    //long uptime = LinuxParser::UpTime(pid_);
+    long totalJiffies = LinuxParser::Jiffies();
+    //cpuUtilization_ = (static_cast<float> (totalTime)/sysconf(_SC_CLK_TCK))/uptime;
+    
+    prev_active_ticks = activeJiffies;
+    prev_ticks = totalJiffies;
+
+    cpuUtilization_ = (float) activeJiffies / totalJiffies;
+    
     return cpuUtilization_;
 }
 
-// TODO: Return the command that generated this process
-string Process::Command() { return LinuxParser::Command(Pid()); }
+// Return the command that generated this process
+string Process::Command() { return com_; }
 
 // Return this process's memory utilization
 string Process::Ram() { 
@@ -36,14 +49,13 @@ string Process::Ram() {
 //    return LinuxParser::Ram(Pid()); 
 }
 
-// TODO: Return the user (name) that generated this process
+// Return the user (name) that generated this process
 string Process::User() { return LinuxParser::User(pid_); }
 
-// TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return LinuxParser::UpTime(Pid()); }
+// Return the age of this process (in seconds)
+long int Process::UpTime() { return LinuxParser::UpTime() - LinuxParser::UpTime(pid_); }
 
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
+// Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const { 
-    return (this->cpuUtilization_ < a.cpuUtilization_);
+    return (this->cpuUtilization_ > a.cpuUtilization_);
 }

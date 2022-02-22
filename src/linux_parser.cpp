@@ -142,10 +142,10 @@ long LinuxParser::ActiveJiffies(int pid) {
 
 // Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() { 
-  std::vector<std::string> ticks_ = CpuUtilization();
+  std::vector<std::string> all_jiffies = CpuUtilization();
   long activ{0};
   // sum up all active jiffies
-  for(auto k : ticks_){
+  for(auto k : all_jiffies){
     activ += std::stol(k);
   }
   return activ; 
@@ -153,8 +153,8 @@ long LinuxParser::ActiveJiffies() {
 
 // Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { 
-  std::vector<std::string> ticks_ = CpuUtilization();
-  return std::stol(ticks_[3]) + std::stol(ticks_[4]); 
+  std::vector<std::string> all_jiffies = CpuUtilization();
+  return std::stol(all_jiffies[3]) + std::stol(all_jiffies[4]); 
 }
 
 // Read and return CPU utilization
@@ -220,6 +220,7 @@ string LinuxParser::Command(int pid) {
   string cmd;
   std::ifstream procstream(kProcDirectory + to_string(pid) + kCmdlineFilename);
   std::getline(procstream, cmd);
+
   return cmd;
 }
 
@@ -265,26 +266,20 @@ string LinuxParser::User(int pid) {
   }
   return user; 
 }
-
 // Read and return the uptime of a process
 long int LinuxParser::UpTime(int pid) {
-  long uptime;
-  string temp, line;
-  vector<string> pidData;
-  std::ifstream pidstream(kProcDirectory + to_string(pid) + kStatFilename);
-  if (pidstream.is_open()){
-    std::getline(pidstream, line);
-    for (unsigned int i=0;i<line.length();i++){
-      if (line[i]==' '){
-        pidData.push_back(temp);
-        temp = "";
-      }
-      else{
-        temp.push_back(line[i]);
-      }
-    }
-    pidData.push_back(temp);
+  string line;
+  string val;
+  int i= 0;
+  long uptime = 0; 
+  std::ifstream stream (kProcDirectory + to_string(pid) + kStatFilename);
+  if(stream.is_open())
+  {
+    std::getline(stream,line);
+    std::istringstream linestream(line);
+    for(i=0; i<22; i++)
+      linestream >>val;
   }
-  uptime = stoi(pidData[21])/sysconf(_SC_CLK_TCK);
-  return uptime;
-}
+  uptime = std::stoi(val); 
+  return uptime; 
+}  
