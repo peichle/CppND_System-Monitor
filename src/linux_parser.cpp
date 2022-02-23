@@ -271,8 +271,6 @@ string LinuxParser::Command(int pid) {
   {
     return "NONE";
   }
-  
-
   return cmd;
 }
 
@@ -296,21 +294,8 @@ string LinuxParser::Ram(int pid) {
   }
   return std::string();
 }
+
 // Read and return the user ID associated with a process
-// string LinuxParser::Uid(int pid) { 
-//   string line, key, value, uid;
-//   std::ifstream procstream(kProcDirectory + to_string(pid) + kStatusFilename);
-//   while (std::getline(procstream, line)){
-//     std::istringstream linestream(line);
-//     linestream >> key >> value;
-//     if (key == "Uid:"){
-//       return value;
-//     }
-//   }
-//   return std::string();
-// }
-
-
 std::string LinuxParser::Uid(int pid) { 
   std::ifstream stream(kProcDirectory + "/" + std::to_string(pid) + kStatusFilename);
     
@@ -326,26 +311,8 @@ std::string LinuxParser::Uid(int pid) {
       }
     }
   }
-
   return "MISSING_uid"; 
 }
-
-// // Read and return the user associated with a process
-// string LinuxParser::User(int pid) { 
-//   string uid = Uid(pid);
-//   string user, line, username, xval, id;
-//   std::ifstream passwdstream(kPasswordPath);
-//   while (std::getline(passwdstream, line)){
-//     std::replace(line.begin(), line.end(), ':', ' ');
-//     std::istringstream linestream(line);
-//     linestream >> username >> xval >> id;
-//     if (id == uid){
-//       return username;
-//     }
-//   }
-//   return "bad_user"; 
-// }
-
 
 std::string LinuxParser::User(int pid) { 
   std::string uid = LinuxParser::Uid(pid);

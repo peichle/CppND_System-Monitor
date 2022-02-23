@@ -32,9 +32,9 @@ vector<Process>& System::Processes() {
         }
     }
     // CPU Utilisation for each process
-    //for(auto& process : processes_) {
-    //    process.CpuUtilization();
-    //}
+    for(auto& process : processes_) {
+        process.CpuUtilization();
+    }
     // Eventuell sortieren
     std::sort(processes_.begin(),processes_.end());
     return processes_; 
