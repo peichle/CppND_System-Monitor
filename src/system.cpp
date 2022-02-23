@@ -21,7 +21,7 @@ Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
-    vector<int> pids{LinuxParser::Pids()};
+    vector<int> pids = LinuxParser::Pids();
     // define pids
     set<int> extant_pids;
     for (Process& k : processes_){ extant_pids.insert(k.Pid());}
@@ -32,9 +32,9 @@ vector<Process>& System::Processes() {
         }
     }
     // CPU Utilisation for each process
-    for(auto& process : processes_) {
-        process.CpuUtilization();
-    }
+    //for(auto& process : processes_) {
+    //    process.CpuUtilization();
+    //}
     // Eventuell sortieren
     std::sort(processes_.begin(),processes_.end());
     return processes_; 

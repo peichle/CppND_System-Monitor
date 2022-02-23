@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include<iostream>
 
 #include "process.h"
 #include "linux_parser.h"
@@ -12,8 +13,7 @@ using std::to_string;
 using std::vector;
 
 
-Process::Process(int pid){
-    pid_ = pid;
+Process::Process(int pid) : pid_(pid){
     //cpuUtilization_ = CpuUtilization();
     com_ = LinuxParser::Command(pid_);
     user_ = LinuxParser::User(pid_);
@@ -27,33 +27,31 @@ int Process::Pid() { return pid_; }
 
 // Return this process's CPU utilization
 float Process::CpuUtilization() {
-    long activeJiffies = LinuxParser::ActiveJiffies(pid_);
-    long totalJiffies = LinuxParser::Jiffies();
-    
-    prev_active_ticks = activeJiffies;
-    prev_ticks = totalJiffies;
-
-    cpuUtilization_ = (float) activeJiffies / totalJiffies;
-    
+// https://stackoverflow.com/questions/16726779/how-do-i-get-the-total-cpu-usage-of-an-application-from-proc-pid-stat/16736599#16736599
+    std::vector<string> times = LinuxParser::CpuUtilization(Pid());
+    long total_time = std::stoi(times[0]) + std::stoi(times[1]);
+    // adding children
+    total_time = std::stoi(times[2]) + std::stoi(times[3]);
+    long uptime = LinuxParser::UpTime();
+    long starttime = std::stoi(times[4]);
+    long hz = sysconf(_SC_CLK_TCK);
+    long seconds = uptime - (starttime / hz);
+    cpuUtilization_ = 100 * (total_time / hz) / seconds;
+   
     return cpuUtilization_;
 }
 
 // Return the command that generated this process
-string Process::Command() { return com_; }
+string Process::Command() { return LinuxParser::Command(pid_); }
 
 // Return this process's memory utilization
-string Process::Ram() { 
-    // std::string ram_ = to_string(std::stoi(LinuxParser::Ram(pid_))/1024)
-    std::string ram_ = LinuxParser::Ram(pid_);
-    return ram_; 
-//    return LinuxParser::Ram(Pid()); 
-}
+string Process::Ram() { return LinuxParser::Ram(pid_); }
 
 // Return the user (name) that generated this process
 string Process::User() { return LinuxParser::User(pid_); }
 
 // Return the age of this process (in seconds)
-long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
+long int Process::UpTime() { return LinuxParser::UpTime() - LinuxParser::UpTime(pid_); }
 
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const { 

@@ -17,5 +17,8 @@ string Format::ElapsedTime(long seconds) {
 
     // https://knowledge.udacity.com/questions/155686
     ss.insert(0, 2 - ss.length(), '0');
+    mm.insert(0, 2 - mm.length(), '0');
+    hh.insert(0, 2 - hh.length(), '0');
+
     return hh + ":" + mm + ":" + ss; 
 }
