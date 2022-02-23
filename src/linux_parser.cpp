@@ -232,6 +232,7 @@ string LinuxParser::Ram(int pid) {
   while (std::getline(procstream, line)) {
     std::istringstream linestream(line);
     linestream >> key >> value >> unit;
+
     if (key == "VmSize:") {
       return value;
     }
@@ -268,18 +269,19 @@ string LinuxParser::User(int pid) {
 }
 // Read and return the uptime of a process
 long int LinuxParser::UpTime(int pid) {
-  string line;
-  string val;
-  int i= 0;
+  string line, value;
   long uptime = 0; 
   std::ifstream stream (kProcDirectory + to_string(pid) + kStatFilename);
   if(stream.is_open())
   {
     std::getline(stream,line);
     std::istringstream linestream(line);
-    for(i=0; i<22; i++)
-      linestream >>val;
+    for(int i=0; i<22; i++){
+      //std::cout << value << std::endl;
+      linestream >>value;
+    }
   }
-  uptime = std::stoi(val); 
+  uptime = std::stol(value); 
+  uptime = uptime / sysconf(_SC_CLK_TCK);
   return uptime; 
 }  
