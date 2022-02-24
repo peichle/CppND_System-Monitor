@@ -14,12 +14,9 @@ using std::vector;
 
 
 Process::Process(int pid) : pid_(pid){
-    //cpuUtilization_ = CpuUtilization();
     com_ = LinuxParser::Command(pid_);
     user_ = LinuxParser::User(pid_);
     cpuUtilization_ = 0;
-    prev_active_ticks = 0;
-    prev_ticks = 0;    
 }
 
 // Return this process's ID
@@ -33,8 +30,6 @@ float Process::CpuUtilization() {
     long total_time = std::stol(times[0]) + std::stol(times[1]);
     // adding children
     total_time = std::stol(times[2]) + std::stol(times[3]);
-    
-    //total_time = std::stoi(times[2]) + std::stoi(times[3]);
     long uptime = LinuxParser::UpTime();
     long starttime = std::stoi(times[4]);
     long hz = sysconf(_SC_CLK_TCK);

@@ -25,28 +25,20 @@ Processor& System::Cpu() { return cpu_; }
 vector<Process>& System::Processes() { 
     vector<int> pids = LinuxParser::Pids();
     // define pids
-    set<int> extant_pids;
-    for (Process& k : processes_){ extant_pids.insert(k.Pid());}
+    set<int> new_pids;
+    for (Process& k : processes_){ new_pids.insert(k.Pid());}
     // add new pids if they are not already exist
     for(int pid : pids){
-        if(extant_pids.find(pid) == extant_pids.end()){
+        if(new_pids.find(pid) == new_pids.end()){
             processes_.emplace_back(pid);
         }
     }
-    // CPU Utilisation for each process
-    // for(auto& process : processes_) {
-    //     process.CpuUtilization();
-    // }
 
+    // calculate CPU Utilization for each process
     for(size_t i=0; i<processes_.size(); ++i){
-
-        // if(i == 100){
-        //     int k; 
-        //     std::cin >> k;
-        // }
         processes_[i].CpuUtilization();
     }
-    // Eventuell sortieren
+    // Sort the vector of processes
     std::sort(processes_.begin(),processes_.end());
     return processes_; 
 }
