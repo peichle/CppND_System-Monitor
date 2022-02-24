@@ -32,10 +32,12 @@ float Process::CpuUtilization() {
     long total_time = std::stoi(times[0]) + std::stoi(times[1]);
     // adding children
     total_time = std::stoi(times[2]) + std::stoi(times[3]);
-    long uptime = LinuxParser::UpTime(Pid());
+    long uptime = LinuxParser::UpTime();
     long starttime = std::stoi(times[4]);
     long hz = sysconf(_SC_CLK_TCK);
+    if (starttime <= 0){ starttime = 1;}
     long seconds = uptime - (starttime / hz);
+    std::cout << starttime << std::endl;
     cpuUtilization_ = 100 * (total_time / hz) / seconds;
    
     return cpuUtilization_;
