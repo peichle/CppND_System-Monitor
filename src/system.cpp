@@ -11,6 +11,8 @@
 #include "linux_parser.h"
 #include "format.h"
 
+#include<iostream>
+
 using std::set;
 using std::size_t;
 using std::string;
@@ -32,8 +34,17 @@ vector<Process>& System::Processes() {
         }
     }
     // CPU Utilisation for each process
-    for(auto& process : processes_) {
-        process.CpuUtilization();
+    // for(auto& process : processes_) {
+    //     process.CpuUtilization();
+    // }
+
+    for(size_t i=0; i<processes_.size(); ++i){
+
+        // if(i == 100){
+        //     int k; 
+        //     std::cin >> k;
+        // }
+        processes_[i].CpuUtilization();
     }
     // Eventuell sortieren
     std::sort(processes_.begin(),processes_.end());
