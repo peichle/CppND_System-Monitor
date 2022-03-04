@@ -27,9 +27,11 @@ float Process::CpuUtilization() {
 // https://stackoverflow.com/questions/16726779/how-do-i-get-the-total-cpu-usage-of-an-application-from-proc-pid-stat/16736599#16736599
     std::vector<string> times = LinuxParser::CpuUtilization(Pid());
 
+    if(times.empty()){return 0;}
+
     long total_time = std::stol(times[0]) + std::stol(times[1]);
     // adding children
-    total_time = std::stol(times[2]) + std::stol(times[3]);
+    //total_time = std::stol(times[2]) + std::stol(times[3]);
     long uptime = LinuxParser::UpTime();
     long starttime = std::stoi(times[4]);
     long hz = sysconf(_SC_CLK_TCK);
@@ -38,7 +40,6 @@ float Process::CpuUtilization() {
     if(seconds <= 0) {return 0;}
     cpuUtilization_ = total_time / hz;
     cpuUtilization_ = cpuUtilization_ / seconds;
-    //cpuUtilization_ *= 100;
    
     return cpuUtilization_;
 }

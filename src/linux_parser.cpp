@@ -192,18 +192,26 @@ vector<string> LinuxParser::CpuUtilization(int pid){
           continue;
         }
         else if (iter == 14) {
+          if(value.size() < 1){continue;}
           utime = value;    
         } 
         else if (iter == 15) {
+          if(value.size() < 1){continue;}
           stime = value;
         }
         else if (iter == 16) {
+          if(value.size() < 1){continue;}
+
           cutime = value;
         }
         else if (iter == 17) {
+          if(value.size() < 1){continue;}
+
           cstime = value;
         }
         else if (iter == 22) {
+          if(value.size() < 1){continue;}
+
           starttime = value;
         }
         else {
